@@ -13,22 +13,22 @@ func main(){
 	}
 
 	var month int
-	fmt.Println("Введите номер месяца: ")
+	fmt.Println("Input num month: ")
 	fmt.Scan(&month)
 	
 	if (month < 1 || month > 12) {
-		fmt.Println("Не корректный номер")
+		fmt.Println("Inncorrect number")
 		return
 	}
 
 	for name, months := range seasons {
 		for _,number := range months {
 			if (number == month){
-				fmt.Println("Сезон - ", name)
+				fmt.Println("Season - ", name)
 				return
 			}
 		}
 	}
 	
-	fmt.Println("Сезон не найден - ")
+	fmt.Println("Season not foun - ")
 }
