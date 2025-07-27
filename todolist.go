@@ -13,6 +13,8 @@ import (
 
 const TABLE_NAME string = "tasks"
 
+var db *sql.DB = nil
+
 type Task struct {
     ID     int64
     NAME  string
@@ -29,27 +31,28 @@ func main(){
     }
 
     var actionId int
-    
-    db := getDB()
+    db = getDB()
     showMenu()
 
     fmt.Scan(&actionId)
 
     for (actionId != 0){
-        actionId = makeAction(db, actionId)
+        actionId = makeAction(actionId)
     }    
 }
 
-func makeAction(db *sql.DB, actionId int) int {
+func makeAction(actionId int) int {
     
     colorYellow := "\033[33m"
 
     switch actionId {
         case 1:
-            tasks := getTasks(db)
+            tasks := getTasks()
             if (len(tasks) < 1){
                 fmt.Println(string(colorYellow), "--- tasks not found")
             }
+        case 2:
+            add()
         case 0:
             return 0
     }   
@@ -61,9 +64,12 @@ func makeAction(db *sql.DB, actionId int) int {
 
 func showMenu(){
     println("")
-    println("-- Menu --")
-    println("1 - show tasks")
+    println("-- Tasks menu --")
+    println("1 - show all")
+    println("2 - add")
     println("0 - exit")
+    println("*press enter if more 9")
+    
 }
 
 func getDB() *sql.DB {
@@ -82,7 +88,7 @@ func getDB() *sql.DB {
     return db
 }
 
-func getTasks(db *sql.DB) []Task {
+func getTasks() []Task {
     var tasks []Task
     rows, err := db.Query("SELECT * FROM "+TABLE_NAME)
     if (err != nil) {
@@ -102,6 +108,33 @@ func getTasks(db *sql.DB) []Task {
     return tasks
 }
 
-// func add(){
+func add(){
+    
+    var complite string 
+    var taskObj Task
 
-// }
+    fmt.Println("enter name taks")
+    fmt.Scan(&taskObj.NAME)
+
+    fmt.Println("enter complited task or not (+,-,y,n)")
+    fmt.Scan(&complite)
+
+    if (complite == "+" || complite == "y"){
+        taskObj.COMPLITE = true
+    } else {
+        taskObj.COMPLITE = false
+    }
+
+    taskObj.DATE_START = time.Now()
+    taskObj.DATE_END = time.Now()
+    fmt.Println("enter date start *format(2000-01-01)")
+    fmt.Scan(&taskObj.DATE_START)
+
+    result, error := db.Exec("INSERT INTO "+TABLE_NAME+" (NAME, COMPLITE, DATE_START, DATE_END) VALUES(?, ?, ?, ?)", 
+        taskObj.NAME, taskObj.COMPLITE, taskObj.DATE_START, taskObj.DATE_END)
+    if (error != nil) {
+        log.Fatal(error)
+        return
+    }
+    fmt.Printf("result: %v\n", result)
+}

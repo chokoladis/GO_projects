@@ -1,3 +1,3 @@
 
-<h3>checkseason</h3> - Выводит время года по номеру месяца
-<h3>todolist</h3> - классика со списком дел (запись, удаление, изменение записи в БД)
+<h3>checkseason</h3> - return year time on number mounth
+<h3>todolist</h3> - classic with list tasks (add, delete, update row in DB)
